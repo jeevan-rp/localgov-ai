@@ -3,6 +3,14 @@ from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(200), nullable=False)
+    email = Column(String(200))
+    phone = Column(String(50))
+    location = Column(String(200))
+
 class Region(Base):
     __tablename__ = 'regions'
     id = Column(Integer, primary_key=True)

@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Region, Service, Question, Rule, Document
+from models import Base, Region, Service, Question, Rule, Document, User
 from tasks import make_celery, send_sms_notification
 
 app = Flask(__name__)
@@ -90,6 +90,43 @@ def triage(service_id):
     }
     session.close()
     return jsonify(res)
+
+@app.route('/api/profile', methods=['GET'])
+def get_profile():
+    session = Session()
+    user = session.query(User).filter(User.id == 1).first()
+    if not user:
+        # Create a default user if none exists
+        user = User(id=1, name='Jane Doe', email='jane.doe@example.com', phone='+91 98765 43210', location='Bangalore, Karnataka')
+        session.add(user)
+        session.commit()
+    
+    res = {
+        "name": user.name,
+        "email": user.email,
+        "phone": user.phone,
+        "location": user.location
+    }
+    session.close()
+    return jsonify(res)
+
+@app.route('/api/profile', methods=['POST'])
+def update_profile():
+    data = request.json
+    session = Session()
+    user = session.query(User).filter(User.id == 1).first()
+    if not user:
+        user = User(id=1, name=data.get('name', 'Jane Doe'))
+        session.add(user)
+    
+    if 'name' in data: user.name = data['name']
+    if 'email' in data: user.email = data['email']
+    if 'phone' in data: user.phone = data['phone']
+    if 'location' in data: user.location = data['location']
+    
+    session.commit()
+    session.close()
+    return jsonify({"message": "Profile updated successfully"})
 
 @app.route('/api/notify', methods=['POST'])
 def notify():

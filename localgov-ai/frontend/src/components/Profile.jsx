@@ -1,24 +1,62 @@
-import { useState } from 'react'
-import { User, Mail, Phone, MapPin, Edit3, Save, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { User, Mail, Phone, MapPin, Edit3, Save, X, Loader2 } from 'lucide-react'
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
   const [profileData, setProfileData] = useState({
-    name: 'Jane Doe',
-    email: 'jane.doe@example.com',
-    phone: '+91 98765 43210',
-    location: 'Bangalore, Karnataka'
+    name: '',
+    email: '',
+    phone: '',
+    location: ''
   })
   const [editForm, setEditForm] = useState({ ...profileData })
 
-  const handleSave = () => {
-    setProfileData(editForm)
-    setIsEditing(false)
+  useEffect(() => {
+    fetchProfile()
+  }, [])
+
+  const fetchProfile = async () => {
+    try {
+      setIsLoading(true)
+      const res = await axios.get(`${API_BASE}/profile`)
+      setProfileData(res.data)
+      setEditForm(res.data)
+    } catch (err) {
+      console.error('Failed to fetch profile', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true)
+      await axios.post(`${API_BASE}/profile`, editForm)
+      setProfileData(editForm)
+      setIsEditing(false)
+    } catch (err) {
+      console.error('Failed to save profile', err)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleCancel = () => {
     setEditForm({ ...profileData })
     setIsEditing(false)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64 w-full">
+        <Loader2 className="animate-spin text-forest-600" size={32} />
+      </div>
+    )
   }
 
   return (
@@ -41,14 +79,16 @@ export default function Profile() {
             <button 
               onClick={handleCancel}
               className="text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-300 flex items-center gap-1 text-sm font-medium transition-colors active:scale-95"
+              disabled={isSaving}
             >
               <X size={16} /> Cancel
             </button>
             <button 
               onClick={handleSave}
-              className="text-forest-600 hover:text-forest-700 dark:text-forest-400 dark:hover:text-forest-300 flex items-center gap-1 text-sm font-medium transition-colors active:scale-95"
+              disabled={isSaving}
+              className="text-forest-600 hover:text-forest-700 dark:text-forest-400 dark:hover:text-forest-300 flex items-center gap-1 text-sm font-medium transition-colors active:scale-95 disabled:opacity-50"
             >
-              <Save size={16} /> Save
+              {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} Save
             </button>
           </div>
         )}
@@ -57,7 +97,7 @@ export default function Profile() {
       <div className="space-y-6">
         <div className="flex items-center gap-4 bg-stone-50 dark:bg-stone-800 p-4 rounded-2xl border border-stone-100 dark:border-stone-700">
           <div className="w-16 h-16 bg-forest-100 dark:bg-forest-900 rounded-full flex items-center justify-center text-forest-700 dark:text-forest-300 text-2xl font-bold uppercase">
-            {profileData.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+            {profileData.name ? profileData.name.split(' ').map(n => n[0]).join('').substring(0, 2) : 'U'}
           </div>
           <div className="flex-1">
             {isEditing ? (
@@ -82,12 +122,12 @@ export default function Profile() {
             {isEditing ? (
               <input 
                 type="email" 
-                value={editForm.email}
+                value={editForm.email || ''}
                 onChange={e => setEditForm({...editForm, email: e.target.value})}
                 className="w-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg px-3 py-1 font-medium text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-forest-500"
               />
             ) : (
-              <div className="font-medium text-stone-900 dark:text-stone-100">{profileData.email}</div>
+              <div className="font-medium text-stone-900 dark:text-stone-100">{profileData.email || 'Not set'}</div>
             )}
           </div>
           
@@ -98,12 +138,12 @@ export default function Profile() {
             {isEditing ? (
               <input 
                 type="tel" 
-                value={editForm.phone}
+                value={editForm.phone || ''}
                 onChange={e => setEditForm({...editForm, phone: e.target.value})}
                 className="w-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg px-3 py-1 font-medium text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-forest-500"
               />
             ) : (
-              <div className="font-medium text-stone-900 dark:text-stone-100">{profileData.phone}</div>
+              <div className="font-medium text-stone-900 dark:text-stone-100">{profileData.phone || 'Not set'}</div>
             )}
           </div>
           
@@ -114,12 +154,12 @@ export default function Profile() {
             {isEditing ? (
               <input 
                 type="text" 
-                value={editForm.location}
+                value={editForm.location || ''}
                 onChange={e => setEditForm({...editForm, location: e.target.value})}
                 className="w-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg px-3 py-1 font-medium text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-forest-500"
               />
             ) : (
-              <div className="font-medium text-stone-900 dark:text-stone-100">{profileData.location}</div>
+              <div className="font-medium text-stone-900 dark:text-stone-100">{profileData.location || 'Not set'}</div>
             )}
           </div>
         </div>
