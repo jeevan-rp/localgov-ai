@@ -19,6 +19,15 @@ DB_URI = os.environ.get('DATABASE_URL', 'sqlite:///localgov.db')
 engine = create_engine(DB_URI)
 Session = sessionmaker(bind=engine)
 
+@app.route('/api/init-db', methods=['GET'])
+def init_db():
+    from seed import seed_db
+    try:
+        seed_db(DB_URI)
+        return jsonify({"message": "Database seeded successfully!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/regions', methods=['GET'])
 def get_regions():
     session = Session()
