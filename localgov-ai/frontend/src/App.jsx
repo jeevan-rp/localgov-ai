@@ -4,7 +4,8 @@ import ChecklistView from './components/ChecklistView'
 import Profile from './components/Profile'
 import Settings from './components/Settings'
 import LandingPage from './components/LandingPage'
-import { Landmark, Home, User, Settings as SettingsIcon } from 'lucide-react'
+import { Home, User, Settings as SettingsIcon } from 'lucide-react'
+import logo from './assets/logo.png'
 
 function App() {
   const [triageData, setTriageData] = useState(null)
@@ -70,10 +71,8 @@ function App() {
           </nav>
 
           <header className="mb-8 text-center flex flex-col items-center">
-            <div className="bg-forest-700 p-3 rounded-full mb-3 shadow-lg text-white">
-              <Landmark size={32} />
-            </div>
-            <h1 className="text-4xl font-bold text-forest-900 dark:text-forest-100 tracking-tight transition-colors">LocalGov AI</h1>
+        <img src={logo} alt="LocalGov AI Logo" className="w-20 h-20 object-contain mb-3 drop-shadow-lg" />
+        <h1 className="text-4xl font-bold text-forest-900 dark:text-forest-100 tracking-tight transition-colors">LocalGov AI</h1>
             <p className="text-stone-500 dark:text-stone-400 mt-2 font-medium transition-colors">Navigating government services with ease.</p>
           </header>
         </>

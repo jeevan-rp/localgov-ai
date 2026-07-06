@@ -1,11 +1,10 @@
-import { Landmark, ArrowRight, ShieldCheck, Zap, Globe } from 'lucide-react'
+import { ArrowRight, ShieldCheck, Zap, Globe } from 'lucide-react'
+import logo from '../assets/logo.png'
 
 export default function LandingPage({ onStart }) {
   return (
     <div className="w-full flex flex-col items-center justify-center min-h-[80vh] animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="bg-forest-700 p-6 rounded-3xl mb-8 shadow-xl text-white transform hover:scale-105 transition-transform duration-300">
-        <Landmark size={64} />
-      </div>
+      <img src={logo} alt="LocalGov AI Logo" className="w-40 h-40 object-contain mb-8 drop-shadow-xl transform hover:scale-105 transition-transform duration-300" />
       
       <h1 className="text-5xl md:text-6xl font-extrabold text-stone-900 dark:text-white text-center tracking-tight mb-6">
         Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-forest-600 to-emerald-500">LocalGov AI</span>
