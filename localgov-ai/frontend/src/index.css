@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl dark:bg-stone-900/80 dark:border-stone-700/50;
+  }
+}
+
+body {
+  @apply bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100 font-sans antialiased min-h-screen relative;
+  -webkit-tap-highlight-color: transparent;
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(140, 30%, 85%, 1) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, hsla(160, 40%, 90%, 1) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+.dark body {
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(140, 30%, 10%, 1) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, hsla(160, 40%, 15%, 1) 0px, transparent 50%);
+}

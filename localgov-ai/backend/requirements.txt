@@ -1,0 +1,8 @@
+Flask==3.0.0
+gunicorn==21.2.0
+Celery==5.3.6
+redis==5.0.1
+SQLAlchemy==2.0.35
+requests==2.31.0
+Flask-Cors==4.0.0
+psycopg2-binary==2.9.9
